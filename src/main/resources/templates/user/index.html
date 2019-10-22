@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hello Spring Security</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/css/main.css" th:href="@{/css/main.css}" />
+</head>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<body>
+
+<div th:substituteby="index::logout"></div>
+<h1>This is a secured page!</h1>
+<div>
+        <input type="button" name="操作" id="operate" value="操作" onclick="cli()"/>
+</div>
+<p><a href="/index" th:href="@{/index}">Back to home page</a></p>
+<script type="application/javascript">
+    function cli() {
+        $.ajax({
+            url:'/user/operate',
+            type:'get',
+            async:true,
+            data:'',
+            success:function(data){
+                console.log(data)
+                // alert(data);
+            },
+            error:function (data) {
+                if(data.status==403){
+                    alert("无权操作");
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

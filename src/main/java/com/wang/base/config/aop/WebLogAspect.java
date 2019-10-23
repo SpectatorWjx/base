@@ -40,7 +40,7 @@ public class WebLogAspect {
     @Autowired
     GlobalExceptionHandler exceptionHandler;
 
-    @Pointcut("execution(public * com.zhijiu.credit.api.admin..*Controller.*(..))")
+    @Pointcut("execution(public * com.wang.base.controller..*Controller.*(..))")
     public void webLog() {
     }
 

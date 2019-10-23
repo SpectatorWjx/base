@@ -1,4 +1,4 @@
-package com.wang.base.config;
+package com.wang.base.config.security;
 
 import com.wang.base.common.exception.BaseException;
 import com.wang.base.config.redis.RedisUtil;

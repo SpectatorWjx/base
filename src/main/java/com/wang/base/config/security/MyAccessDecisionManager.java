@@ -1,4 +1,4 @@
-package com.wang.base.config;
+package com.wang.base.config.security;
 
 import com.alibaba.druid.util.StringUtils;
 import org.springframework.security.access.AccessDecisionManager;

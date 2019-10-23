@@ -1,4 +1,4 @@
-package com.wang.base.config;
+package com.wang.base.config.security;
 
 import com.wang.base.dao.PermissionJpa;
 import com.wang.base.model.Permission;

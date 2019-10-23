@@ -30,8 +30,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .and().formLogin().failureHandler(customAuthenticationFailureHandler()).successForwardUrl("/loginSuccess").permitAll()
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/")
+                .and().formLogin().failureHandler(customAuthenticationFailureHandler()).permitAll()
+                .and().logout().logoutUrl("/logout")
                 .and().exceptionHandling().authenticationEntryPoint(myAuthenticationEntryPoint).accessDeniedHandler(myAccessDeniedHandler)
                 .and().authorizeRequests().anyRequest().authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
@@ -51,7 +51,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
+        return new MyAuthenticationFailureHandler();
     }
 
     @Bean

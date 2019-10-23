@@ -1,8 +1,6 @@
 package com.wang.base.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -14,11 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomAuthenticationFailureHandler
+public class MyAuthenticationFailureHandler
   implements AuthenticationFailureHandler {
-
-    @Autowired
-    RedisTemplate stringRedisTemplate;
 
     private ObjectMapper objectMapper = new ObjectMapper();
  

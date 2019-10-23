@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /***
  * @ClassName: UserJpa
  * @Description:
@@ -14,4 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserJpa extends JpaRepository<User, Integer>, JpaSpecificationExecutor {
     User findByUsername(String username);
+
+    List<User> findByUsernameIn(List<String> username);
 }

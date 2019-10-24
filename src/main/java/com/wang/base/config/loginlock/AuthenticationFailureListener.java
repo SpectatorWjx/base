@@ -1,6 +1,6 @@
-package com.wang.base.config.loginTime;
+package com.wang.base.config.loginlock;
 
-import com.wang.base.config.redis.RedisUtil;
+import com.wang.base.common.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;

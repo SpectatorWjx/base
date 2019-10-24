@@ -1,19 +1,22 @@
-package com.wang.base.config.security;
+package com.wang.base.config;
 
 import com.wang.base.common.exception.BaseException;
-import com.wang.base.config.redis.RedisUtil;
+import com.wang.base.common.utils.RedisUtil;
 import com.wang.base.dao.PermissionJpa;
 import com.wang.base.dao.UserJpa;
 import com.wang.base.dao.UserRoleJpa;
+import com.wang.base.enums.ResultEnum;
 import com.wang.base.model.Permission;
 import com.wang.base.model.User;
 import com.wang.base.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
@@ -22,7 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@Service
+@Service("userDetailsService")
+@Transactional
 public class SecurityUserService implements UserDetailsService {
     @Autowired
     private UserJpa userJpa;
@@ -40,7 +44,7 @@ public class SecurityUserService implements UserDetailsService {
         if (hasKey && redisUtil.getExpire(key)>0) {
             Integer count = Integer.parseInt(redisUtil.get(key));
             if(count >= 5) {
-                throw new BaseException("账号已锁定");
+                throw new BaseException(ResultEnum.ACCOUNT_IS_LOCKED.getCode(),ResultEnum.ACCOUNT_IS_LOCKED.getMessage());
             }
         }
         User user = userJpa.findByUsername(username);

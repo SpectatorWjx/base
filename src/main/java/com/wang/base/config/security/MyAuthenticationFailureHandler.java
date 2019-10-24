@@ -1,38 +1,37 @@
 package com.wang.base.config.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
+import com.alibaba.fastjson.JSON;
+import com.wang.base.common.result.Result;
+import com.wang.base.common.utils.ResultUtil;
+import com.wang.base.enums.ResultEnum;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class MyAuthenticationFailureHandler
-  implements AuthenticationFailureHandler {
+/***
+ * @ClassName: A
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
+@Component
+public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
- 
     @Override
-    public void onAuthenticationFailure(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      AuthenticationException exception)
-      throws IOException{
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Type", "text/html; charset=UTF-8");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        Map<String, Object> data = new HashMap<>();
-        data.put("status",401);
-        if (exception instanceof InternalAuthenticationServiceException) {
-            data.put("message", exception.getMessage());
-        } else {
-            data.put("message","用户名或密码错误");
+    public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
+        Result result =  ResultUtil.error(ResultEnum.USER_LOGIN_FAILED.getCode(),ResultEnum.USER_LOGIN_FAILED.getMessage());
+        if (e instanceof InternalAuthenticationServiceException) {
+            result= ResultUtil.exception(ResultEnum.USER_LOGIN_FAILED.getCode(),e.getMessage());
         }
-        response.getWriter().println(objectMapper.writeValueAsString(data));
+        httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
+
 }

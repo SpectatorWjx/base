@@ -85,7 +85,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     redisUtil.hset("blacklist", authToken, DateUtil.getTime());
                     if (DateUtil.compareDate(currentTime, tokenValidTime)) {
                         //超过有效期，不刷新
-                        log.info("{}已超过有效期，不刷新",authToken);
+                        log.info("{}已超过有效期，不刷新,重新验证",authToken);
                         response.getWriter().write(JSON.toJSONString(ResultUtil.exception(ResultEnum.LOGIN_IS_OVERDUE.getCode(), ResultEnum.LOGIN_IS_OVERDUE.getMessage())));
                         return;
                     } else {//仍在刷新时间内，则刷新token，放入请求头中

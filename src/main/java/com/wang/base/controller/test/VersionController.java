@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 接口版本测试类
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 @RestController
 @RequestMapping("/api")

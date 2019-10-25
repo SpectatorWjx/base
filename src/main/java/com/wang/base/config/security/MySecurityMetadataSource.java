@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 public class MySecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     @Autowired

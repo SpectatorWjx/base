@@ -14,7 +14,12 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.nio.charset.Charset;
 import java.util.List;
 
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Slf4j
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {

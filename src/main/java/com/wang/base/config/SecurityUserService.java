@@ -25,7 +25,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Service("userDetailsService")
 @Transactional
 public class SecurityUserService implements UserDetailsService {

@@ -12,6 +12,12 @@ import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.Set;
 
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Data
 @Entity
 public class User extends BaseEntity implements UserDetails {

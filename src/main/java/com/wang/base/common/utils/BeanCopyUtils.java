@@ -7,6 +7,12 @@ import org.springframework.beans.BeanWrapperImpl;
 import java.util.HashSet;
 import java.util.Set;
 
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 public class BeanCopyUtils extends BeanUtils {
         /**
          * @Description <p>获取到对象中属性为null的属性名  </P>

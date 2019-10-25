@@ -2,10 +2,11 @@ package com.wang.base.common.enums;
 
 import lombok.Getter;
 
-/**
- * @author: wjx
- * @date: 2018/10/15 15:16
- * @description: 返回的错误码枚举类
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 @Getter
 public enum ResultEnum {

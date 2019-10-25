@@ -1,7 +1,12 @@
 package com.wang.base.common.utils;
 
 import com.wang.base.common.result.Result;
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 public class ResultUtil {
 
     /**

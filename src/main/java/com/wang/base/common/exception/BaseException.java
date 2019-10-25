@@ -1,9 +1,10 @@
 package com.wang.base.common.exception;
 
-/**
- * 自定义异常类 基类
- * @author R.lee
- * @since 2019/6/17
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 public class BaseException extends RuntimeException {
 

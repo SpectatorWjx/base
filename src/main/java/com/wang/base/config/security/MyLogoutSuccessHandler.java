@@ -1,5 +1,6 @@
 package com.wang.base.config.security;
 
+import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.ResultUtil;
 import com.wang.base.common.utils.RedisUtil;
 import com.wang.base.common.enums.ResultEnum;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /***
- * @ClassName: A
+ * @ClassName:
  * @Description:
  * @Auther: wjx zhijiu
  * @Date: 2019/10/24 10:29
@@ -41,8 +42,8 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
             log.info("用户登出成功！token：{}已加入redis黑名单",authToken);
         }
         httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
-        httpServletResponse.getWriter().println(ResultUtil.success(ResultEnum.USER_LOGOUT_SUCCESS.getMessage()));
+        httpServletResponse.setHeader("Content-Type", "application/json; charset=UTF-8");
+        httpServletResponse.getWriter().println(JSON.toJSONString(ResultUtil.success(ResultEnum.USER_LOGOUT_SUCCESS.getMessage())));
     }
 
 }

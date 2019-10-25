@@ -2,11 +2,11 @@ package com.wang.base.common.log;
 
 import lombok.Data;
 
-/**
- * The type Logs entity.
- *
- * @author : R.lee
- * @date : 2019.08.26 16:01:45
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 @Data
 public class LogsInfo{

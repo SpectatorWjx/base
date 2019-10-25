@@ -1,5 +1,6 @@
 package com.wang.base.config.security;
 
+import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.*;
 import com.wang.base.common.enums.ResultEnum;
 import com.wang.base.model.User;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /***
- * @ClassName: A
+ * @ClassName:
  * @Description:
  * @Auther: wjx zhijiu
  * @Date: 2019/10/24 10:29
@@ -49,7 +50,9 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         redisUtil.setTokenRefresh(jwtToken,userDetails.getUsername(),clientId);
         log.info("用户{}登录成功，信息已保存至redis",userDetails.getUsername());
 
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setHeader("Content-Type", "application/json; charset=UTF-8");
         httpServletResponse.setHeader("Authorization", jwtToken);
-        httpServletResponse.getWriter().println(ResultUtil.success(ResultEnum.SUCCESS.getMessage()));
+        httpServletResponse.getWriter().println(JSON.toJSONString(ResultUtil.success(ResultEnum.SUCCESS.getMessage())));
     }
 }

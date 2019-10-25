@@ -27,9 +27,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-/**
- * 统一日志处理切面
- * Created by xc on 190903.
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 @Aspect
 @Component

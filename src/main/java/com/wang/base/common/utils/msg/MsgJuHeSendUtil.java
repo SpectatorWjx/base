@@ -12,7 +12,12 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 public class MsgJuHeSendUtil {
 	public static final String DEF_CHATSET = "UTF-8";
 	public static final int DEF_CONN_TIMEOUT = 30000;

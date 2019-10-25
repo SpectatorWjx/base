@@ -1,5 +1,6 @@
 package com.wang.base.config.security.filters;
 
+import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.*;
 import com.wang.base.config.SecurityUserService;
 import com.wang.base.common.utils.RedisUtil;
@@ -47,7 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Type", "text/html; charset=UTF-8");
+        response.setHeader("Content-Type", "application/json; charset=UTF-8");
 
         String authHeader = request.getHeader("Authorization");
 
@@ -65,7 +66,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
              */
             if (redisUtil.isBlackList(authToken)) {
                 log.info("用户：{}的token：{}在黑名单之中，拒绝访问",username,authToken);
-                response.getWriter().println(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),ResultEnum.TOKEN_IS_BLACKLIST.getMessage()));
+                response.getWriter().println(JSON.toJSONString(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),ResultEnum.TOKEN_IS_BLACKLIST.getMessage())));
                 return;
             }
             /*
@@ -84,7 +85,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
                     if (DateUtil.compareDate(currentTime, tokenValidTime)) {//超过有效期，不刷新
                         log.info("{}已超过有效期，不刷新",authToken);
-                        response.getWriter().println(ResultUtil.exception(ResultEnum.LOGIN_IS_OVERDUE.getCode(), ResultEnum.LOGIN_IS_OVERDUE.getMessage()));
+                        response.getWriter().println(JSON.toJSONString(ResultUtil.exception(ResultEnum.LOGIN_IS_OVERDUE.getCode(), ResultEnum.LOGIN_IS_OVERDUE.getMessage())));
                         return;
                     } else {//仍在刷新时间内，则刷新token，放入请求头中
                         String usernameByToken = (String) redisUtil.getUsernameByToken(authToken);
@@ -123,7 +124,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     //进入黑名单验证
                     if (redisUtil.isBlackList(authToken)) {
                         log.info("用户：{}的token：{}在黑名单之中，拒绝访问",username,authToken);
-                        response.getWriter().println(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(), ResultEnum.TOKEN_IS_BLACKLIST.getMessage()));
+                        response.getWriter().println(JSON.toJSONString(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(), ResultEnum.TOKEN_IS_BLACKLIST.getMessage())));
                         return;
                     }
                 }

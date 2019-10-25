@@ -1,5 +1,6 @@
 package com.wang.base.config.security;
 
+import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.ResultUtil;
 import com.wang.base.common.enums.ResultEnum;
 import org.springframework.security.core.AuthenticationException;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /***
- * @ClassName: A
+ * @ClassName:
  * @Description:
  * @Auther: wjx zhijiu
  * @Date: 2019/10/24 10:29
@@ -23,7 +24,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
-        httpServletResponse.getWriter().println(ResultUtil.exception(ResultEnum.USER_NEED_AUTHORITIES.getCode(),ResultEnum.USER_NEED_AUTHORITIES.getMessage()));
+        httpServletResponse.setHeader("Content-Type", "application/json; charset=UTF-8");
+        httpServletResponse.getWriter().println(JSON.toJSONString(ResultUtil.exception(ResultEnum.USER_NEED_AUTHORITIES.getCode(),ResultEnum.USER_NEED_AUTHORITIES.getMessage())));
     }
 }

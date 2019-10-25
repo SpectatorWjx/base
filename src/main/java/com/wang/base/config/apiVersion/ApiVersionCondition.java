@@ -8,6 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Data
 @Slf4j
 public class ApiVersionCondition implements RequestCondition<ApiVersionCondition> {

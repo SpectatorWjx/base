@@ -18,7 +18,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /***
- * @ClassName: A
+ * @ClassName:
  * @Description:
  * @Auther: wjx zhijiu
  * @Date: 2019/10/24 10:29

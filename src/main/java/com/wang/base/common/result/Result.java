@@ -1,7 +1,12 @@
 package com.wang.base.common.result;
 
 import lombok.Data;
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Data
 public class Result<T>{
     /**

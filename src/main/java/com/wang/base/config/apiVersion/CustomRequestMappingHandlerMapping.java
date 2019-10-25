@@ -9,6 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Slf4j
 public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 

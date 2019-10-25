@@ -5,7 +5,12 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @Data
 @JsonIgnoreProperties
 public class BasePage<T> implements Serializable {

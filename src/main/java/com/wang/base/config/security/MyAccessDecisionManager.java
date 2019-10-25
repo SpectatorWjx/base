@@ -11,8 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * 权限验证
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
  */
 @Component
 public class MyAccessDecisionManager implements AccessDecisionManager {

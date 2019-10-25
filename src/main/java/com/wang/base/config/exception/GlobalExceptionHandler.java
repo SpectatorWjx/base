@@ -10,7 +10,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.xml.ws.handler.Handler;
 
-
+/***
+ * @ClassName:
+ * @Description:
+ * @Auther: wjx zhijiu
+ * @Date: 2019/10/24 10:29
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler implements HandlerInterceptor {
 

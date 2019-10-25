@@ -3,10 +3,12 @@ package com.wang.base.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Data
 @Entity
-public class Permission extends BaseEntity{
+@Table(name = "permission")
+public class PermissionEntity extends BaseEntity{
 
     private String permissionName;
 

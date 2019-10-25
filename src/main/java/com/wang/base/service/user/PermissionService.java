@@ -1,6 +1,6 @@
-package com.wang.base.service;
+package com.wang.base.service.user;
 
-import com.wang.base.model.Permission;
+import com.wang.base.model.PermissionEntity;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ import java.util.List;
  * @Date: 2019/10/9 10:02
  */
 public interface PermissionService {
-    List<Permission> findAllPermission();
+    List<PermissionEntity> findAllPermission();
 }

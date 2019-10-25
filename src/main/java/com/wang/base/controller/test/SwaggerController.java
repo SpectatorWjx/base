@@ -1,7 +1,7 @@
 package com.wang.base.controller.test;
 
-import com.wang.base.model.Role;
-import com.wang.base.model.User;
+import com.wang.base.model.RoleEntity;
+import com.wang.base.model.UserEntity;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +41,7 @@ public class SwaggerController {
     @ApiOperation(value = "测试swagger3方法")
     @GetMapping("swagger3")
     @ResponseBody
-    public String swagger3(@ApiParam(value = "用户List")@ModelAttribute@RequestBody List<Role> roles) {
+    public String swagger3(@ApiParam(value = "用户List")@ModelAttribute@RequestBody List<RoleEntity> roles) {
         return "实体参数@ApiParam@ModelAttribute@RequestBody";
     }
 
@@ -55,7 +55,7 @@ public class SwaggerController {
     @ApiOperation(value = "测试操作权限方法")
     @ResponseBody
     @PutMapping("swagger5")
-    public String swagger5(@ModelAttribute @RequestBody User user) {
+    public String swagger5(@ModelAttribute @RequestBody UserEntity user) {
         return "实体参数@ApiParam@ModelAttribute@RequestBody";
     }
 

@@ -1,7 +1,7 @@
-package com.wang.base.service.impl;
+package com.wang.base.service.user.impl;
 
-import com.wang.base.model.Permission;
-import com.wang.base.service.PermissionService;
+import com.wang.base.model.PermissionEntity;
+import com.wang.base.service.user.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     PermissionService permissionJpa;
     @Override
-    public List<Permission> findAllPermission() {
+    public List<PermissionEntity> findAllPermission() {
         return permissionJpa.findAllPermission();
     }
 }

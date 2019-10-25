@@ -2,6 +2,7 @@ package com.wang.base.config;
 
 import com.wang.base.config.security.*;
 import com.wang.base.config.security.filters.JwtAuthenticationTokenFilter;
+import com.wang.base.config.security.sms.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,14 +48,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // 加入自定义的安全认证
+        //TODO 加密相关
         auth.userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        http.apply(smsCodeAuthenticationSecurityConfig);
         // 去掉 CSRF
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭token
@@ -69,10 +74,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         return fsi;
                     }
                 });
-        // 记住我
         http.rememberMe().rememberMeParameter("remember-me")
                 .userDetailsService(userDetailsService).tokenValiditySeconds(1000);
-
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT Filter
 

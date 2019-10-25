@@ -5,12 +5,13 @@ import com.wang.base.common.utils.RedisUtil;
 import com.wang.base.dao.PermissionJpa;
 import com.wang.base.dao.UserJpa;
 import com.wang.base.dao.UserRoleJpa;
-import com.wang.base.enums.ResultEnum;
-import com.wang.base.model.Permission;
+import com.wang.base.common.enums.ResultEnum;
+import com.wang.base.model.PermissionEntity;
 import com.wang.base.model.User;
-import com.wang.base.model.UserRole;
+import com.wang.base.model.UserEntity;
+import com.wang.base.model.UserRoleEntity;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,21 +48,25 @@ public class SecurityUserService implements UserDetailsService {
                 throw new BaseException(ResultEnum.ACCOUNT_IS_LOCKED.getCode(),ResultEnum.ACCOUNT_IS_LOCKED.getMessage());
             }
         }
-        User user = userJpa.findByUsername(username);
-        if (user == null){
+        UserEntity userEntity = userJpa.findByPhone(username);
+        if (userEntity == null){
             throw new UsernameNotFoundException(username);
         }
 
-        List<UserRole> userRoles = userRoleJpa.findAllByUserId(user.getId());
-        List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        User user = new User();
+        BeanUtils.copyProperties(userEntity,user);
 
-        List<Permission> permissions = permissionJpa.selectByRoleIds(roleIds);
-        if (!CollectionUtils.isEmpty(permissions)){
-            Set<SimpleGrantedAuthority> sga = new HashSet<>();
-            permissions.forEach(p->{
-                sga.add(new SimpleGrantedAuthority(p.getPermissionCode()));
-            });
-            user.setAuthorities(sga);
+        List<UserRoleEntity> userRoles = userRoleJpa.findAllByUserId(userEntity.getId());
+        if(!userRoles.isEmpty()) {
+            List<Integer> roleIds = userRoles.stream().map(UserRoleEntity::getRoleId).collect(Collectors.toList());
+            List<PermissionEntity> permissions = permissionJpa.selectByRoleIds(roleIds);
+            if (!CollectionUtils.isEmpty(permissions)) {
+                Set<SimpleGrantedAuthority> sga = new HashSet<>();
+                permissions.forEach(p -> {
+                    sga.add(new SimpleGrantedAuthority(p.getPermissionCode()));
+                });
+                user.setAuthorities(sga);
+            }
         }
         return user;
     }

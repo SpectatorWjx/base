@@ -1,8 +1,7 @@
 package com.wang.base.config.security;
 
-import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.*;
-import com.wang.base.enums.ResultEnum;
+import com.wang.base.common.enums.ResultEnum;
 import com.wang.base.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,20 +38,18 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         //获取请求的ip地址
-        String ip = IpUtil.getIpAddr(httpServletRequest);
+        String clientId = IpUtil.getIpAddr(httpServletRequest);
         Map<String,Object> map = new HashMap<>();
-        map.put("ip",ip);
+        map.put("clientId",clientId);
 
         User userDetails = (User) authentication.getPrincipal();
 
         String jwtToken = JwtTokenUtil.generateToken(userDetails.getUsername(), expirationSeconds, map);
 
-        //获取请求的ip地址
-        String currentIp = IpUtil.getIpAddr(httpServletRequest);
-        redisUtil.setTokenRefresh(jwtToken,userDetails.getUsername(),currentIp);
+        redisUtil.setTokenRefresh(jwtToken,userDetails.getUsername(),clientId);
         log.info("用户{}登录成功，信息已保存至redis",userDetails.getUsername());
 
         httpServletResponse.setHeader("Authorization", jwtToken);
-        httpServletResponse.getWriter().write(JSON.toJSONString(ResultUtil.success(ResultEnum.SUCCESS.getMessage())));
+        httpServletResponse.getWriter().println(ResultUtil.success(ResultEnum.SUCCESS.getMessage()));
     }
 }

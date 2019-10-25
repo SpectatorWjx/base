@@ -1,11 +1,13 @@
 package com.wang.base.config.loginlock;
 
 import com.wang.base.common.utils.RedisUtil;
+import com.wang.base.dao.UserJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,10 +20,16 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
 
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    UserJpa userJpa;
 
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent authenticationFailureBadCredentialsEvent) {
         String username = authenticationFailureBadCredentialsEvent.getAuthentication().getPrincipal().toString();
+
+        if(!Optional.ofNullable(userJpa.findByPhone(username)).isPresent()){
+            return;
+        }
 
         String key = "user_" + username;
         boolean hasKey = redisUtil.hasKey(key);

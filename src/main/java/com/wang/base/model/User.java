@@ -20,7 +20,14 @@ public class User extends BaseEntity implements UserDetails {
 
     private String password;
 
+    private String phone;
+
     private Boolean locked;
+
+    @Override
+    public String getUsername() {
+        return getPhone();
+    }
 
     @Getter
     @Setter

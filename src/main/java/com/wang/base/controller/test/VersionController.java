@@ -1,7 +1,7 @@
 package com.wang.base.controller.test;
 
 import com.wang.base.config.apiVersion.ApiVersion;
-import com.wang.base.model.User;
+import com.wang.base.model.UserEntity;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +31,8 @@ public class VersionController {
     */
     @ApiVersion(1)
     @GetMapping("/{version}/version")
-    public String test1(Integer test1){
+    public Object test1(Integer test1){
+        System.out.println(1/0);
         return "version 1";
     }
 
@@ -51,7 +52,7 @@ public class VersionController {
     */
 	@ApiVersion(2)
     @GetMapping("/{version}/version")
-    public String test2(String test2){
+    public Object test2(String test2){
         return "version 2";
     }
 
@@ -72,7 +73,7 @@ public class VersionController {
     */
     @ApiVersion(3)
     @GetMapping("/{version}/version")
-    public String test3(User test3, String name){
+    public Object test3(UserEntity test3, String name){
         return "version 3";
     }
 }

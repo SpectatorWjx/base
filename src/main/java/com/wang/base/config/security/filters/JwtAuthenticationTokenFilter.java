@@ -1,10 +1,9 @@
 package com.wang.base.config.security.filters;
 
-import com.alibaba.fastjson.JSON;
 import com.wang.base.common.utils.*;
 import com.wang.base.config.SecurityUserService;
 import com.wang.base.common.utils.RedisUtil;
-import com.wang.base.enums.ResultEnum;
+import com.wang.base.common.enums.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,14 +58,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             String authToken = authHeader.substring("Bearer ".length());
 
             String username = JwtTokenUtil.parseToken(authToken, "salt");
-            String ip = CollectionUtil.getMapValue(JwtTokenUtil.getClaims(authToken), "ip");
+            String clientId = CollectionUtil.getMapValue(JwtTokenUtil.getClaims(authToken), "clientId");
 
             /*
             进入黑名单验证
              */
             if (redisUtil.isBlackList(authToken)) {
                 log.info("用户：{}的token：{}在黑名单之中，拒绝访问",username,authToken);
-                response.getWriter().write(JSON.toJSONString(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),ResultEnum.TOKEN_IS_BLACKLIST.getMessage())));
+                response.getWriter().println(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),ResultEnum.TOKEN_IS_BLACKLIST.getMessage()));
                 return;
             }
             /*
@@ -74,37 +73,36 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
              * 过期的话，从redis中读取有效时间（比如七天登录有效），再refreshToken（根据以后业务加入，现在直接refresh）
              * 同时，已过期的token加入黑名单
              */
-            if (redisUtil.hasKey(authToken)) {
-                String expirationTime = redisUtil.hget(authToken,"expirationTime").toString();
-                if (JwtTokenUtil.isExpiration(expirationTime)) {
-                    //获得redis中用户的token刷新时效
+            if (redisUtil.hasToken(authToken)) {
+                String expirationTime = redisUtil.getExpirationTimeByToken(authToken).toString();
+                if (JwtTokenUtil.isExpiration(expirationTime)) {//获得redis中用户的token刷新时效
                     String tokenValidTime = (String) redisUtil.getTokenValidTimeByToken(authToken);
                     String currentTime = DateUtil.getTime();
                     //这个token已作废，加入黑名单
                     log.info("{}已作废，加入黑名单",authToken);
-                    redisUtil.hset("blacklist", authToken, DateUtil.getTime());
-                    if (DateUtil.compareDate(currentTime, tokenValidTime)) {
-                        //超过有效期，不刷新
+                    redisUtil.addBlackList(authToken);
+
+                    if (DateUtil.compareDate(currentTime, tokenValidTime)) {//超过有效期，不刷新
                         log.info("{}已超过有效期，不刷新",authToken);
-                        response.getWriter().write(JSON.toJSONString(ResultUtil.exception(ResultEnum.LOGIN_IS_OVERDUE.getCode(), ResultEnum.LOGIN_IS_OVERDUE.getMessage())));
+                        response.getWriter().println(ResultUtil.exception(ResultEnum.LOGIN_IS_OVERDUE.getCode(), ResultEnum.LOGIN_IS_OVERDUE.getMessage()));
                         return;
                     } else {//仍在刷新时间内，则刷新token，放入请求头中
                         String usernameByToken = (String) redisUtil.getUsernameByToken(authToken);
                         username = usernameByToken;//更新username
 
-                        ip = (String) redisUtil.getIPByToken(authToken);//更新ip
+                        clientId = (String) redisUtil.getClientByToken(authToken);//更新ip
 
                         //获取请求的ip地址
                         Map<String, Object> map = new HashMap<>();
-                        map.put("ip", ip);
+                        map.put("clientId", clientId);
                         String jwtToken = JwtTokenUtil.generateToken(usernameByToken, expirationSeconds, map);
 
                         //更新redis
-                        redisUtil.setTokenRefresh(jwtToken,usernameByToken,ip);
+                        redisUtil.setTokenRefresh(jwtToken,usernameByToken,clientId);
                         //删除旧的token保存的redis
-                        redisUtil.deleteKey(authToken);
+                        redisUtil.deleteToken(authToken);
                         //新的token保存到redis中
-                        redisUtil.setTokenRefresh(jwtToken,username,ip);
+                        redisUtil.setTokenRefresh(jwtToken,username,clientId);
 
                         log.info("redis已删除旧token：{},新token：{}已更新redis",authToken,jwtToken);
                         authToken = jwtToken;//更新token，为了后面
@@ -120,12 +118,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                  * 加入对ip的验证
                  * 如果ip不正确，进入黑名单验证
                  */
-                if (!StringUtil.equals(ip, currentIp)) {//地址不正确
+                if (!StringUtil.equals(clientId, currentIp)) {//地址不正确
                     log.info("用户：{}的ip地址变动，进入黑名单校验",username);
                     //进入黑名单验证
                     if (redisUtil.isBlackList(authToken)) {
                         log.info("用户：{}的token：{}在黑名单之中，拒绝访问",username,authToken);
-                        response.getWriter().write(JSON.toJSONString(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(), ResultEnum.TOKEN_IS_BLACKLIST.getMessage())));
+                        response.getWriter().println(ResultUtil.exception(ResultEnum.TOKEN_IS_BLACKLIST.getCode(), ResultEnum.TOKEN_IS_BLACKLIST.getMessage()));
                         return;
                     }
                 }

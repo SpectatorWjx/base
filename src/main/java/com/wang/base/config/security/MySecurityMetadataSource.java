@@ -1,7 +1,7 @@
 package com.wang.base.config.security;
 
 import com.wang.base.dao.PermissionJpa;
-import com.wang.base.model.Permission;
+import com.wang.base.model.PermissionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -59,7 +59,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
 
     private void loadResourcePermission() {
         urlPermMap = new HashMap<>();
-        List<Permission> permissions = permissionJpa.findAll();
+        List<PermissionEntity> permissions = permissionJpa.findAll();
         permissions.stream().forEach(p -> urlPermMap.put(p.getUrl(),p.getPermissionCode()));
     }
 

@@ -1,10 +1,8 @@
 package com.wang.base.config.security;
 
-import com.alibaba.fastjson.JSON;
-import com.wang.base.common.utils.DateUtil;
 import com.wang.base.common.utils.ResultUtil;
 import com.wang.base.common.utils.RedisUtil;
-import com.wang.base.enums.ResultEnum;
+import com.wang.base.common.enums.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -34,17 +32,17 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
         String authHeader = httpServletRequest.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             final String authToken = authHeader.substring("Bearer ".length());
-            if(redisUtil.isBlackList(authToken)) {
+            if(redisUtil.hasToken(authToken)) {
                 //将token放入黑名单中
-                redisUtil.hset("blacklist", authToken, DateUtil.getTime());
+                redisUtil.addBlackList(authToken);
                 //删除旧的token保存的redis
-                redisUtil.deleteKey(authToken);
+                redisUtil.deleteToken(authToken);
             }
             log.info("用户登出成功！token：{}已加入redis黑名单",authToken);
         }
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(ResultUtil.success(ResultEnum.USER_LOGOUT_SUCCESS.getMessage())));
+        httpServletResponse.getWriter().println(ResultUtil.success(ResultEnum.USER_LOGOUT_SUCCESS.getMessage()));
     }
 
 }

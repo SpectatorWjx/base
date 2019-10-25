@@ -31,125 +31,16 @@ public class RedisUtil {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 查询key,支持模糊查询
-     *
-     * @param key 传过来时key的前后端已经加入了*，或者根据具体处理
-     * */
-    public Set<String> keys(String key){
-        return stringRedisTemplate.keys(key);
-    }
-
-
-    /**
-     * 字符串存入值
-     * @param expire 过期时间（毫秒计）
-     * @param key
-     * */
-    public void set(String key, String value,Integer expire){
-        stringRedisTemplate.opsForValue().set(key,value, expire,TimeUnit.SECONDS);
-    }
-
-    /**
-     * 删出key
-     * 这里跟下边deleteKey（）最底层实现都是一样的，应该可以通用
-     * @param key
-     * */
-    public void delete(String key){
-        stringRedisTemplate.opsForValue().getOperations().delete(key);
-    }
-
-    /**
-     * 添加单个
-     * 默认过期时间为两小时
-     * @param key    key
-     * @param filed  filed
-     * @param domain 对象
-     */
-    public void hset(String key,String filed,Object domain){
-        stringRedisTemplate.opsForHash().put(key, filed, domain);
-    }
-
-    /**
-     * 添加单个
-     * @param key    key
-     * @param filed  filed
-     * @param domain 对象
-     * @param expire 过期时间（毫秒计）
-     */
-    public void hset(String key,String filed,Object domain,Integer expire){
-        stringRedisTemplate.opsForHash().put(key, filed, domain);
-        stringRedisTemplate.expire(key, expire,TimeUnit.SECONDS);
-    }
-
-    /**
-     * 添加HashMap
-     *
-     * @param key    key
-     * @param hm    要存入的hash表
-     */
-    public void hset(String key, HashMap<String,Object> hm){
-        stringRedisTemplate.opsForHash().putAll(key,hm);
-    }
-
-    /**
-     * 如果key存在就不覆盖
-     * @param key
-     * @param filed
-     * @param domain
-     */
-    public void hsetAbsent(String key,String filed,Object domain){
-        stringRedisTemplate.opsForHash().putIfAbsent(key, filed, domain);
-    }
-
-    /**
-     * 查询key和field所确定的值
-     *
-     * @param key 查询的key
-     * @param field 查询的field
-     * @return HV
-     */
-    public Object hget(String key,String field) {
-        return stringRedisTemplate.opsForHash().get(key, field);
-    }
-
-    /**
-     * 查询该key下所有值
-     *
-     * @param key 查询的key
-     * @return Map<HK, HV>
-     */
-    public Object hget(String key) {
-        return stringRedisTemplate.opsForHash().entries(key);
-    }
-
-    /**
-     * 删除key下所有值
-     *
-     * @param key 查询的key
-     */
-    public void deleteKey(String key) {
-        stringRedisTemplate.opsForHash().getOperations().delete(key);
-    }
-
-    /**
-     * 判断key和field下是否有值
-     *
-     * @param key 判断的key
-     * @param field 判断的field
-     */
-    public Boolean hasKey(String key,String field) {
-        return stringRedisTemplate.opsForHash().hasKey(key,field);
-    }
 
     /**
      * 判断key下是否有值
      *
      * @param key 判断的key
      */
-    public Boolean hasKey(String key) {
-        return stringRedisTemplate.opsForHash().getOperations().hasKey(key);
+    public Boolean hasToken(String key) {
+        return stringRedisTemplate.opsForHash().getOperations().hasKey("token:"+key);
     }
+
 
     /**
      * 判断此token是否在黑名单中
@@ -176,7 +67,7 @@ public class RedisUtil {
      * @return HV
      */
     public Object getTokenValidTimeByToken(String token) {
-        return stringRedisTemplate.opsForHash().get(token, "tokenValidTime");
+        return stringRedisTemplate.opsForHash().get("token:"+token, "tokenValidTime");
     }
 
     /**
@@ -186,7 +77,7 @@ public class RedisUtil {
      * @return HV
      */
     public Object getUsernameByToken(String token) {
-        return stringRedisTemplate.opsForHash().get(token, "username");
+        return stringRedisTemplate.opsForHash().get("token:"+token, "username");
     }
 
     /**
@@ -195,8 +86,8 @@ public class RedisUtil {
      * @param token 查询的key
      * @return HV
      */
-    public Object getIPByToken(String token) {
-        return stringRedisTemplate.opsForHash().get(token, "ip");
+    public Object getClientByToken(String token) {
+        return stringRedisTemplate.opsForHash().get("token:"+token, "clientId");
     }
 
     /**
@@ -206,24 +97,194 @@ public class RedisUtil {
      * @return HV
      */
     public Object getExpirationTimeByToken(String token) {
-        return stringRedisTemplate.opsForHash().get(token, "expirationTime");
+        return stringRedisTemplate.opsForHash().get("token:"+token, "expirationTime");
     }
 
-    public void setTokenRefresh(String token,String username,String ip){
+    /**
+     * 设置token
+     * @param token
+     * @param username
+     * @param clientId
+     */
+    public void setTokenRefresh(String token,String username,String clientId){
         //刷新时间
         Integer expire = validTime*24*60*60*1000;
 
-        hset(token, "tokenValidTime", DateUtil.getAddDayTime(validTime),expire);
-        hset(token, "expirationTime",DateUtil.getAddDaySecond(expirationSeconds),expire);
-        hset(token, "username",username,expire);
-        hset(token, "ip",ip,expire);
+        hset("token:"+token, "tokenValidTime", DateUtil.getAddDayTime(validTime),expire);
+        hset("token:"+token, "expirationTime",DateUtil.getAddDaySecond(expirationSeconds),expire);
+        hset("token:"+token, "username",username,expire);
+        hset("token:"+token, "clientId",clientId,expire);
+    }
+
+    /**
+     * 删除token
+     *
+     * @param key 查询的key
+     */
+    public void deleteToken(String key) {
+        stringRedisTemplate.opsForHash().getOperations().delete("token:"+key);
     }
 
 
+    /**------------------------------------手机验证码-----------------------------------------------**/
+
+    /**
+     * 字符串存入值
+     * @param expire 过期时间（毫秒计）
+     * @param key
+     * */
+    public void setPhoneMsg(String key, String value,Integer expire){
+        stringRedisTemplate.opsForValue().set("phone:"+key,value, expire,TimeUnit.SECONDS);
+    }
+    /**
+     * 获取手机验证码
+     * @param key
+     * */
+    public Object getPhoneMsg(String key){
+        return stringRedisTemplate.opsForValue().get("phone:"+key);
+    }
+
+    /**
+     * 判断key下是否有值
+     *
+     * @param key 判断的key
+     */
+    public Boolean hasPhoneMsg(String key) {
+        return stringRedisTemplate.opsForHash().getOperations().hasKey("phone:"+key);
+    }
+    /**
+     * 删除验证码
+     *
+     * @param key 查询的key
+     */
+    public void deletePhoneMsg(String key) {
+        stringRedisTemplate.opsForHash().getOperations().delete("phone:"+key);
+    }
 
 
-        /** -------------------key相关操作--------------------- */
+    /** -------------------key相关操作--------------------- */
 
+
+
+        /**
+         * 查询key,支持模糊查询
+         *
+         * @param key 传过来时key的前后端已经加入了*，或者根据具体处理
+         * */
+        public Set<String> keys(String key){
+            return stringRedisTemplate.keys(key);
+        }
+
+
+        /**
+         * 字符串存入值
+         * @param expire 过期时间（毫秒计）
+         * @param key
+         * */
+        public void set(String key, String value,Integer expire){
+            stringRedisTemplate.opsForValue().set(key,value, expire,TimeUnit.SECONDS);
+        }
+
+        /**
+         * 删出key
+         * 这里跟下边deleteKey（）最底层实现都是一样的，应该可以通用
+         * @param key
+         * */
+        public void delete(String key){
+            stringRedisTemplate.opsForValue().getOperations().delete(key);
+        }
+
+        /**
+         * 添加单个
+         * 默认过期时间为两小时
+         * @param key    key
+         * @param filed  filed
+         * @param domain 对象
+         */
+        public void hset(String key,String filed,Object domain){
+            stringRedisTemplate.opsForHash().put(key, filed, domain);
+        }
+
+        /**
+         * 添加单个
+         * @param key    key
+         * @param filed  filed
+         * @param domain 对象
+         * @param expire 过期时间（毫秒计）
+         */
+        public void hset(String key,String filed,Object domain,Integer expire){
+            stringRedisTemplate.opsForHash().put(key, filed, domain);
+            stringRedisTemplate.expire(key, expire,TimeUnit.SECONDS);
+        }
+
+        /**
+         * 添加HashMap
+         *
+         * @param key    key
+         * @param hm    要存入的hash表
+         */
+        public void hset(String key, HashMap<String,Object> hm){
+            stringRedisTemplate.opsForHash().putAll(key,hm);
+        }
+
+        /**
+         * 如果key存在就不覆盖
+         * @param key
+         * @param filed
+         * @param domain
+         */
+        public void hsetAbsent(String key,String filed,Object domain){
+            stringRedisTemplate.opsForHash().putIfAbsent(key, filed, domain);
+        }
+
+        /**
+         * 查询key和field所确定的值
+         *
+         * @param key 查询的key
+         * @param field 查询的field
+         * @return HV
+         */
+        public Object hget(String key,String field) {
+            return stringRedisTemplate.opsForHash().get(key, field);
+        }
+
+        /**
+         * 查询该key下所有值
+         *
+         * @param key 查询的key
+         * @return Map<HK, HV>
+         */
+        public Object hget(String key) {
+            return stringRedisTemplate.opsForHash().entries(key);
+        }
+
+        /**
+         * 删除key下所有值
+         *
+         * @param key 查询的key
+         */
+        public void deleteKey(String key) {
+            stringRedisTemplate.opsForHash().getOperations().delete(key);
+        }
+
+        /**
+         * 判断key和field下是否有值
+         *
+         * @param key 判断的key
+         * @param field 判断的field
+         */
+        public Boolean hasKey(String key,String field) {
+            return stringRedisTemplate.opsForHash().hasKey(key,field);
+        }
+
+        /**
+         * 判断key下是否有值
+         *
+         * @param key 判断的key
+         */
+        public Boolean hasKey(String key) {
+            return stringRedisTemplate.opsForHash().getOperations().hasKey(key);
+        }
 
 
         /**

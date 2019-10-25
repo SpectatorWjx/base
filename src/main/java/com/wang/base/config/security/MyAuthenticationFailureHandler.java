@@ -1,9 +1,8 @@
 package com.wang.base.config.security;
 
-import com.alibaba.fastjson.JSON;
 import com.wang.base.common.result.Result;
 import com.wang.base.common.utils.ResultUtil;
-import com.wang.base.enums.ResultEnum;
+import com.wang.base.common.enums.ResultEnum;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -31,7 +30,7 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
         if (e instanceof InternalAuthenticationServiceException) {
             result= ResultUtil.exception(ResultEnum.USER_LOGIN_FAILED.getCode(),e.getMessage());
         }
-        httpServletResponse.getWriter().write(JSON.toJSONString(result));
+        httpServletResponse.getWriter().println(result);
     }
 
 }

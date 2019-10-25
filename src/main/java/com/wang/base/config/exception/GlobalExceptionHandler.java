@@ -6,10 +6,13 @@ import com.wang.base.common.utils.ResultUtil;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import javax.xml.ws.handler.Handler;
 
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler implements HandlerInterceptor {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody

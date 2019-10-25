@@ -1,4 +1,4 @@
-package com.wang.base.enums;
+package com.wang.base.common.enums;
 
 import lombok.Getter;
 
@@ -20,6 +20,9 @@ public enum ResultEnum {
     TOKEN_IS_BLACKLIST(206,"此token已无效"),
     LOGIN_IS_OVERDUE(207,"登录已失效"),
     ACCOUNT_IS_LOCKED(208,"账号锁定"),
+    SMS_CODE_ERROR(301,"验证码错误"),
+    SMS_CODE_IS_INVALID(302,"验证码无效,重新获取"),
+    SMS_CODE_NOT_SEND(303,"请先获取验证码")
     ;
 
     private Integer code;

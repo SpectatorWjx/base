@@ -1,6 +1,6 @@
 package com.wang.base.dao;
 
-import com.wang.base.model.UserRole;
+import com.wang.base.model.UserRoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -14,6 +14,6 @@ import java.util.List;
  * @Date: 2019/10/8 10:59
  */
 @Repository
-public interface UserRoleJpa extends JpaRepository<UserRole, Integer>, JpaSpecificationExecutor {
-    List<UserRole> findAllByUserId(Integer userId);
+public interface UserRoleJpa extends JpaRepository<UserRoleEntity, Integer>, JpaSpecificationExecutor {
+    List<UserRoleEntity> findAllByUserId(Integer userId);
 }

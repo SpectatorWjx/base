@@ -10,7 +10,7 @@ import java.io.*;
  * @author lnj
  * createTime 2018-10-19 15:31
  **/
-public class ImageUtil {
+public class ThumbnailImageUtil {
 
     // 图片默认缩放比率
     private static final double DEFAULT_SCALE = 0.25d;
@@ -23,7 +23,7 @@ public class ImageUtil {
      * @param inputStreams    要生成缩略图的文件列表
      * @throws IOException
      */
-    public static OutputStream generateThumbnail2Directory(Double scale, InputStream... inputStreams) throws IOException {
+    public static OutputStream generateThumbnailDirectory(InputStream inputStreams, Double scale) throws IOException {
         if(null==scale){
             scale = DEFAULT_SCALE;
         }
@@ -31,6 +31,7 @@ public class ImageUtil {
         Thumbnails.of(inputStreams)
                 // 图片缩放率，不能和size()一起使用
                 .scale(scale)
+                .outputQuality(0.95f)
                 .toOutputStream(outputStream);
         return outputStream;
     }

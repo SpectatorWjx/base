@@ -66,18 +66,18 @@ public class MongoManageUtils {
         return files;
     }
 
-
     /**
      * 图片上传
-     * @param
+     * @param file
      * @return
      */
-    public static FileDocument saveImage(InputStream inputStream, FileDocument fileDocument, String collectionName) {
+    public static FileDocument saveImage(MultipartFile file, String collectionName) {
         if(StringUtil.isEmpty(collectionName)){
             collectionName = "image";
         }
-        return save(inputStream,fileDocument,collectionName,imageMongoTemplate,imageGridFsTemplate);
+        return save(file,collectionName,imageMongoTemplate,imageGridFsTemplate);
     }
+
 
     /**
      * 查询图片
@@ -110,11 +110,11 @@ public class MongoManageUtils {
      * @param
      * @return
      */
-    public static FileDocument saveFile(InputStream inputStream, FileDocument fileDocument, String collectionName) {
+    public static FileDocument saveFile(MultipartFile file, String collectionName) {
         if(StringUtil.isEmpty(collectionName)){
             collectionName = "file";
         }
-        return save(inputStream,fileDocument,collectionName,imageMongoTemplate,imageGridFsTemplate);
+        return save(file,collectionName,imageMongoTemplate,imageGridFsTemplate);
     }
 
 
@@ -146,24 +146,33 @@ public class MongoManageUtils {
 
 
     /**-----------------------------------------------------------     操作方法    ------------------------------------**/
-
     /**
      * 上传
-     * @param
+     * @param file
      * @return
      */
-    private static FileDocument save(InputStream inputStream, FileDocument fileDocument, String collectionName, MongoTemplate mongoTemplate, GridFsTemplate gridFsTemplate) {
-        String md5 = SecureUtil.md5(inputStream);
+    private static FileDocument save(MultipartFile file, String collectionName, MongoTemplate mongoTemplate, GridFsTemplate gridFsTemplate) {
+        String md5 = null;
+        try {
+            md5 = SecureUtil.md5(file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //已存在该文件，则实现秒传
-        FileDocument ifExistFile = getByMd5(md5, collectionName, mongoTemplate);
-        if(ifExistFile != null){
-            return ifExistFile;
+        FileDocument fileDocument = getByMd5(md5, collectionName, mongoTemplate);
+        if(fileDocument != null){
+            return fileDocument;
         }
+        fileDocument = getDocumentByFile(file);
         fileDocument.setMd5(md5);
-        String gridFSId = uploadFileToGridFS(inputStream , fileDocument.getContentType(), gridFsTemplate);
-        fileDocument.setGridfsId(gridFSId);
-        fileDocument = mongoTemplate.save(fileDocument , collectionName);
+        try {
+            String gridFSId = uploadFileToGridFS(file.getInputStream() , file.getContentType(), gridFsTemplate);
+            fileDocument.setGridfsId(gridFSId);
+            fileDocument = mongoTemplate.save(fileDocument , collectionName);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
         return fileDocument;
     }
 

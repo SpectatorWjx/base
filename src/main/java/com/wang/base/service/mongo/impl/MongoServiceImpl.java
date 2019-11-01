@@ -4,7 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.wang.base.common.exception.BaseException;
 import com.wang.base.common.utils.SecurityAuthUtil;
 import com.wang.base.common.utils.StringUtil;
-import com.wang.base.common.utils.image.ImageUtil;
+import com.wang.base.common.utils.image.ThumbnailImageUtil;
 import com.wang.base.common.utils.mongo.MongoManageUtils;
 import com.wang.base.dao.ImageJpa;
 import com.wang.base.model.ImageEntity;
@@ -13,6 +13,7 @@ import com.wang.base.service.mongo.MongoService;
 import com.wang.base.vo.ImageVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,31 +79,33 @@ public class MongoServiceImpl implements MongoService {
          /*
         获取图片参数
          */
-        FileDocument masterDocument = MongoManageUtils.getDocumentByFile(file);
-        FileDocument compressDocument = MongoManageUtils.getDocumentByFile(file);
-        String fileName = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."))+"_0.25";
-        compressDocument.setName(fileName+masterDocument.getSuffix());
         InputStream inputStream = null;
+        ByteArrayOutputStream baos = null;
+        FileDocument masterDocument = null;
+        FileDocument compressDocument = null;
         try {
             inputStream = file.getInputStream();
-            OutputStream outputStream = ImageUtil.generateThumbnail2Directory(0.25,inputStream);
-            ByteArrayOutputStream baos = (ByteArrayOutputStream) outputStream;
+            FileDocument fileDocument = MongoManageUtils.getDocumentByFile(file);
+            String fileName = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."))+"_0.25";
+            OutputStream outputStream = ThumbnailImageUtil.generateThumbnailDirectory(inputStream, 0.25);
+            baos = (ByteArrayOutputStream) outputStream;
             byte[] bytes = baos.toByteArray();
-            compressDocument.setSize(bytes.length);
             InputStream compressStream = new ByteArrayInputStream(bytes);
+            MultipartFile compressFile = new MockMultipartFile(file.getName(), fileName, fileDocument.getContentType(), compressStream);
             /*
             原图存入mongo
              */
-            masterDocument = MongoManageUtils.saveImage(file.getInputStream(), masterDocument, collectionName);
+            masterDocument = MongoManageUtils.saveImage(file, collectionName);
             /*
             压缩图存入mongo
              */
-            compressDocument = MongoManageUtils.saveImage(compressStream, compressDocument, collectionName);
+            compressDocument = MongoManageUtils.saveImage(compressFile, collectionName);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 inputStream.close();
+                baos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

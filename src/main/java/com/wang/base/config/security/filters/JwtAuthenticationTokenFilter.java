@@ -91,19 +91,23 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         String usernameByToken = (String) redisUtil.getUsernameByToken(authToken);
                         username = usernameByToken;//更新username
 
+                        String userIdByToken = (String) redisUtil.getUsernameByToken(authToken);
+                        String userId = userIdByToken;//更新userId
+
                         clientId = (String) redisUtil.getClientByToken(authToken);//更新ip
 
                         //获取请求的ip地址
                         Map<String, Object> map = new HashMap<>();
                         map.put("clientId", clientId);
+                        map.put("userId", userId);
                         String jwtToken = JwtTokenUtil.generateToken(usernameByToken, expirationSeconds, map);
 
                         //更新redis
-                        redisUtil.setTokenRefresh(jwtToken,usernameByToken,clientId);
+                        redisUtil.setTokenRefresh(jwtToken,usernameByToken,clientId,userId);
                         //删除旧的token保存的redis
                         redisUtil.deleteToken(authToken);
                         //新的token保存到redis中
-                        redisUtil.setTokenRefresh(jwtToken,username,clientId);
+                        redisUtil.setTokenRefresh(jwtToken,username,clientId,userId);
 
                         log.info("redis已删除旧token：{},新token：{}已更新redis",authToken,jwtToken);
                         authToken = jwtToken;//更新token，为了后面

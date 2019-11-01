@@ -3,6 +3,7 @@ package com.wang.base.config.aop;
 import com.wang.base.common.log.LogsInfo;
 import com.wang.base.common.utils.IpUtil;
 import com.wang.base.config.exception.GlobalExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -36,8 +37,8 @@ import java.util.*;
 @Aspect
 @Component
 @Order(1)
+@Slf4j
 public class WebLogAspect {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebLogAspect.class);
 
     @Autowired
     GlobalExceptionHandler exceptionHandler;
@@ -98,7 +99,7 @@ public class WebLogAspect {
             webLog.setException(e.toString()+e.getMessage());
             return exceptionHandler.defaultErrorHandler(e);
         }
-        LOGGER.info("{}", webLog.toString());
+        log.info("{}", webLog.toString());
         return result;
     }
 

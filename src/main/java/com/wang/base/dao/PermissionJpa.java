@@ -15,8 +15,8 @@ import java.util.List;
  * @Date: 2019/10/8 10:59
  */
 @Repository
-public interface PermissionJpa extends JpaRepository<PermissionEntity, Integer>, JpaSpecificationExecutor {
+public interface PermissionJpa extends JpaRepository<PermissionEntity, String>, JpaSpecificationExecutor {
 
     @Query(value ="select p from PermissionEntity p  where p.id in (select rp.permissionId from RolePermissionEntity rp where rp.roleId in ?1)")
-    List<PermissionEntity> selectByRoleIds(List<Integer> roleIds);
+    List<PermissionEntity> selectByRoleIds(List<String> roleIds);
 }

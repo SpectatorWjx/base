@@ -14,6 +14,6 @@ import java.util.List;
  * @Date: 2019/10/8 10:59
  */
 @Repository
-public interface UserRoleJpa extends JpaRepository<UserRoleEntity, Integer>, JpaSpecificationExecutor {
-    List<UserRoleEntity> findAllByUserId(Integer userId);
+public interface UserRoleJpa extends JpaRepository<UserRoleEntity, String>, JpaSpecificationExecutor {
+    List<UserRoleEntity> findAllByUserId(String userId);
 }

@@ -22,6 +22,8 @@ import java.util.Set;
 @Entity
 public class User extends BaseEntity implements UserDetails {
 
+    private String userId;
+
     private String username;
 
     private String password;

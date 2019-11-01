@@ -71,7 +71,7 @@ public class RedisUtil {
     }
 
     /**
-     * 查询token下的刷新时间
+     * 查询token下的username
      *
      * @param token 查询的key
      * @return HV
@@ -81,13 +81,23 @@ public class RedisUtil {
     }
 
     /**
-     * 查询token下的刷新时间
+     * 查询token下clientId
      *
      * @param token 查询的key
      * @return HV
      */
     public Object getClientByToken(String token) {
         return stringRedisTemplate.opsForHash().get("token:"+token, "clientId");
+    }
+
+    /**
+     * 查询token下userId
+     *
+     * @param token 查询的key
+     * @return HV
+     */
+    public Object getUserIdByToken(String token) {
+        return stringRedisTemplate.opsForHash().get("token:"+token, "userId");
     }
 
     /**
@@ -106,7 +116,7 @@ public class RedisUtil {
      * @param username
      * @param clientId
      */
-    public void setTokenRefresh(String token,String username,String clientId){
+    public void setTokenRefresh(String token,String username,String clientId, String userId){
         //刷新时间
         Integer expire = validTime*24*60*60*1000;
 
@@ -114,6 +124,7 @@ public class RedisUtil {
         hset("token:"+token, "expirationTime",DateUtil.getAddDaySecond(expirationSeconds),expire);
         hset("token:"+token, "username",username,expire);
         hset("token:"+token, "clientId",clientId,expire);
+        hset("token:"+token, "userId",userId,expire);
     }
 
     /**

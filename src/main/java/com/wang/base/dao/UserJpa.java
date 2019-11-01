@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2019/10/8 10:59
  */
 @Repository
-public interface UserJpa extends JpaRepository<UserEntity, Integer>, JpaSpecificationExecutor {
+public interface UserJpa extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor {
     UserEntity findByUsername(String username);
 
     UserEntity findByPhone(String phone);

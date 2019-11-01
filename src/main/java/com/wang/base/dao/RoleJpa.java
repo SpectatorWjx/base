@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  * @Date: 2019/10/8 10:59
  */
 @Repository
-public interface RoleJpa extends JpaRepository<RoleEntity, Integer>, JpaSpecificationExecutor {
+public interface RoleJpa extends JpaRepository<RoleEntity, String>, JpaSpecificationExecutor {
 
 }

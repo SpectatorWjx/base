@@ -60,10 +60,11 @@ public class SecurityUserService implements UserDetailsService {
 
         User user = new User();
         BeanUtils.copyProperties(userEntity,user);
+        user.setUserId(userEntity.getId());
 
         List<UserRoleEntity> userRoles = userRoleJpa.findAllByUserId(userEntity.getId());
         if(!userRoles.isEmpty()) {
-            List<Integer> roleIds = userRoles.stream().map(UserRoleEntity::getRoleId).collect(Collectors.toList());
+            List<String> roleIds = userRoles.stream().map(UserRoleEntity::getRoleId).collect(Collectors.toList());
             List<PermissionEntity> permissions = permissionJpa.selectByRoleIds(roleIds);
             if (!CollectionUtils.isEmpty(permissions)) {
                 Set<SimpleGrantedAuthority> sga = new HashSet<>();

@@ -44,10 +44,12 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         map.put("clientId",clientId);
 
         User userDetails = (User) authentication.getPrincipal();
+        String userId  = userDetails.getUserId();
+        map.put("userId", userId);
 
         String jwtToken = JwtTokenUtil.generateToken(userDetails.getUsername(), expirationSeconds, map);
 
-        redisUtil.setTokenRefresh(jwtToken,userDetails.getUsername(),clientId);
+        redisUtil.setTokenRefresh(jwtToken,userDetails.getUsername(),clientId, userId);
         log.info("用户{}登录成功，信息已保存至redis",userDetails.getUsername());
 
         httpServletResponse.setCharacterEncoding("UTF-8");
